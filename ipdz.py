@@ -17,15 +17,24 @@ def get_country_code(ip, reader):
         print(f"Error fetching data for IP {ip}: {e}")
         return 'Unknown'
 
-# 保存IP到对应的国家代码文件，并去除重复的IP地址
+# 保存IP到对应的国家代码文件，并去除重
 def save_ip_to_file(ip, country_code):
     country_code = country_code or 'Unknown'
     filename = f'{country_code}.txt'
     
+    # 确保文件存在，如果不存在则创建它
+    if not os.path.exists(filename):
+        open(filename, 'a').close()
+    
+    # 现在文件肯定存在，我们可以安全地打开它并检查内容
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+    
     # 确保不会重复写入相同的IP地址
-    if ip + '\n' not in open(filename, 'r').readlines():
+    if ip + '\n' not in lines:
         with open(filename, 'a') as file:
             file.write(ip + '\n')
+
 
 # 删除所有以国家代码命名的.txt文件，除了特定的文件
 def delete_existing_country_files(exceptions):
